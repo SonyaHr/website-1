@@ -1,0 +1,26 @@
+{% extends 'blog/base.html' %}
+{% block content %}
+<h1 class="page-header">
+    Page Heading
+    <small>Secondary Text</small>
+</h1>
+{% for post in posts %}
+
+<!-- First Blog Post -->
+<h2>
+    <a href="{% url 'blog:post' name=post.title %}">{{post.title}}</a>
+</h2>
+<p class="lead">
+    by <a href="#">{{post.user}}</a>
+</p>
+<p><span class="glyphicon glyphicon-time"></span> Posted on {{ post.published_date}}</p>
+<hr>
+<img class="img-responsive" src="{{post.image}}" alt="">
+<hr>
+<p> {{ post.content|truncatewords:20 }}</p>
+<a class="btn btn-primary" href="{% url 'blog:post' name=post.title %}">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+<hr>
+
+{% endfor %}
+{% endblock %}

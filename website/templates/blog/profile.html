@@ -1,0 +1,31 @@
+{% extends 'blog/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h1 class="my-4">Your Profile</h1>
+    <div class="row">
+        <div class="col-md-3">
+            {% if profile_data.avatar %}
+                <img src="{{ profile_data.avatar.url }}" alt="User avatar" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+            {% else %}
+                <img src="{% static 'images/default_avatar.png' %}" alt="Default avatar" class="img-fluid rounded-circle mb-3" style="max-width: 150px;">
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            <div class="profile-details">
+                <p><strong>First name:</strong> {{ user.first_name }}</p>
+                <p><strong>Last name:</strong> {{ user.last_name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Telephone:</strong> {{ profile_data.telephone }}</p>
+                <p><strong>Comments count:</strong> {{ user_stats.comments_count }}</p>
+                <p><strong>Posts count:</strong> {{ user_stats.posts_count }}</p>
+                <p><strong>Days on site:</strong> {{ user_stats.days_on_site }}</p>
+                <p><strong>Reputation:</strong> {{ user_stats.reputation }}</p>
+            </div>
+            <a href="{% url 'edit_profile' %}" class="btn btn-primary mt-3">Update Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
