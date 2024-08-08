@@ -51,7 +51,16 @@ class Comment(models.Model):
     text = models.TextField(verbose_name="Текст")
     author = models.ForeignKey(User, on_delete=models.CASCADE, default=1, verbose_name="Автор")
     published_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публікації")
-
+    rating = models.IntegerField(default=0)
+    
+    def upvote(self):
+        self.rating += 1
+        self.save()
+        
+    def downvote(self):
+        self.rating -= 1
+        self.save()
+        
     def __str__(self):
         return f"{self.text}"
 

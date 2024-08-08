@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.timezone import now
 from django.views import View
-from django.db.models import Q
+from django.db.models import Q  # Імпортуйте Q для використання в фільтрах
 
 from .forms import PostForm, PostImageFormSet, UserRegistrationForm, ProfileUpdateForm, CommentForm, SubscribeForm, PhotoForm, ProfileForm
 from .models import Post, Category, Profile, Comment, Photo, Subscriber, PostImage
@@ -41,7 +41,7 @@ def post(request, name=None):
             comment.post = post
             comment.author = request.user
             comment.save()
-            return redirect('post', name=post.title)
+            return redirect('blog:post', name=post.title)
     else:
         comment_form = CommentForm()
     
@@ -68,7 +68,11 @@ def contact(request):
 
 def search(request):
     query = request.GET.get('query')
-    posts = Post.objects.filter(Q(content__icontains=query) | Q(title__icontains=query))
+    if query:
+        posts = Post.objects.filter(Q(content__icontains=query) | Q(title__icontains=query))
+    else:
+        posts = Post.objects.none()  # Повертаємо порожній QuerySet, якщо запит порожній
+
     context = {'posts': posts, 'query': query}
     context.update(get_categories())
     return render(request, "blog/index.html", context)
@@ -93,7 +97,7 @@ def create(request):
                     image = form.cleaned_data['image']
                     PostImage.objects.create(post=post, image=image)
 
-            return redirect('main')
+            return redirect('blog:index')
     else:
         post_form = PostForm()
         image_formset = PostImageFormSet(queryset=PostImage.objects.none())
@@ -109,7 +113,7 @@ def create(request):
 class MyLogoutView(View):
     def get(self, request):
         logout(request)
-        return redirect('main')
+        return redirect('blog:index')
 
 @login_required
 def edit_profile(request):
@@ -127,13 +131,13 @@ def edit_profile(request):
 
 def registration(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
+        form = UserRegistrationForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('profile')
+            return redirect('blog:profile')
     else:
         form = UserRegistrationForm()
     context = {"form": form}
@@ -186,3 +190,13 @@ def edit_profile(request):
     
     context = {"form": form}
     return render(request, 'blog/profileupdate.html', context)
+
+def comment_upvote(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    comment.upvote()
+    return redirect('blog:post', name=comment.post.title)
+
+def comment_downvote(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    comment.downvote()
+    return redirect('blog:post', name=comment.post.title)

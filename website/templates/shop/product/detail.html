@@ -11,6 +11,14 @@
         <h1>{{ product.name }}</h1>
         <p>{{ product.description }}</p>
         <h3>${{ product.price }}</h3>
+        
+        <!-- Відображення середнього рейтингу -->
+        {% if reviews.count > 0 %}
+            <p>Rating: {{ avg_rating|floatformat:1 }} / 5</p>
+        {% else %}
+            <p>No reviews yet</p>
+        {% endif %}
+        
         <form action="{% url 'cart:cart_add' product.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -21,4 +29,53 @@
         </form>
     </div>
 </div>
+
+<!-- Reviews Section -->
+<div class="row mt-4">
+    <div class="col-md-12">
+        <h2>Reviews</h2>
+        {% for review in reviews %}
+            <div class="media mb-3">
+                <div class="media-body">
+                    <h5 class="mt-0">{{ review.user.username }} - {{ review.rating }}/5</h5>
+                    <p>{{ review.comment }}</p>
+                </div>
+            </div>
+        {% endfor %}
+        <h3>Leave a Review</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<!-- Recommended Products Section -->
+<h2>Recommended Products</h2>
+<div class="row">
+    {% for product in recommended_products %}
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm">
+            <img src="{{ product.image.url }}" class="card-img-top img-fluid" alt="{{ product.name }}" style="max-height: 250px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="btn-group">
+                        <a href="{{ product.get_absolute_url }}" class="btn btn-sm btn-outline-secondary">View</a>
+                        <form action="{% url 'cart:cart_add' product.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Add to cart</button>
+                        </form>
+                    </div>
+                    <small class="text-muted">${{ product.price }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
 {% endblock %}

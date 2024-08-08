@@ -9,7 +9,7 @@ def func():
 # Create your views here.
 def index(request):
     number = 100
-    title = "Main page"
+    title = "index page"
     context = {"title": title}
     return render(request, "helloweb/index.html", context)
 

@@ -9,14 +9,14 @@ app_name = 'blog'
 
 urlpatterns = [
     # Головна сторінка
-    path("", views.index, name="main"),
+    path('', views.index, name='index'),
     
     # Перегляд окремого посту
-    path("post/<str:name>", views.post, name="post"),
+    path('post/<str:name>/', views.post, name='post'),
     
     # Контактна сторінка
-    path("contacts", views.contact, name="contacts"),
-    
+    path('contacts/', views.contact, name='contacts'),
+
     # Перегляд постів за категорією
     path("category/<str:c>", views.category, name="category"),
     
@@ -46,6 +46,10 @@ urlpatterns = [
     
     # Профіль едіт
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    
+    path('comment/upvote/<int:id>/', views.comment_upvote, name='comment_upvote'),
+    
+    path('comment/downvote/<int:id>/', views.comment_downvote, name='comment_downvote'),
 ]
 
 if settings.DEBUG:

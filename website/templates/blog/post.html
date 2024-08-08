@@ -7,7 +7,7 @@
 
 <!-- Author -->
 <p class="lead">
-    by <a href="#">{{ post.user.username }}</a>
+    by <a href="#">{{ post.author.username }}</a>
 </p>
 <hr>
 
@@ -65,6 +65,11 @@
             <small>{{ comment.published_date }}</small>
         </h4>
         {{ comment.text }}
+        <p>Rating: {{ comment.rating }}</p>
+        <div>
+            <a href="{% url 'blog:comment_upvote' comment.id %}" class="btn btn-success btn-sm">Upvote</a>
+            <a href="{% url 'blog:comment_downvote' comment.id %}" class="btn btn-danger btn-sm">Downvote</a>
+        </div>
     </div>
 </div>
 <hr>

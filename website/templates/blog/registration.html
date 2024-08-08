@@ -3,7 +3,7 @@
 {% block content %}
 <h1>User Registration</h1>
 
-<form action="{% url 'registration' %}" method="POST">
+<form action="{% url 'blog:registration' %}" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.non_field_errors }}
     <div class="form-group">
